@@ -9,11 +9,12 @@ const muri = require('muri')
 const defaultOptions = {
   host: 'localhost',
   port: 27017,
-  db: 'test',
+  db: 'admin',
   authSource: 'admin',
   max: 100,
   min: 1,
-  acquireTimeoutMillis: 100
+  acquireTimeoutMillis: 100,
+  workDb: 'test1'
 }
 
 function mongo (connOptions, confOptions = {}) {
@@ -29,6 +30,7 @@ function mongo (connOptions, confOptions = {}) {
   } else {
     dbName = muri(mongoUrl.replace('+srv', '')).db
   }
+  if (workDb) {dbName = connOptions.workDb}  // working DB, connOptions.db is auth DB
 
   const mongoPool = genericPool.createPool({
     create: () => MongoClient.connect(mongoUrl, Object.assign({
